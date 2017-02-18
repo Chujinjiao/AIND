@@ -67,7 +67,7 @@ def naked_twins(values):
                         for digit in values[labels_of_same_value[i]]:
                             values[label] = values[label].replace(digit, '')
         [labels.remove(label) for label in labels_of_same_value] #remove the onces which has finished naked_twins check
-
+    # display(values) #please uncomment this to check my answer
     return values
 
 

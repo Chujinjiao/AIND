@@ -1,14 +1,22 @@
 # Artificial Intelligence Nanodegree
 ## Introductory Project: Diagonal Sudoku Solver
 
+   1. Find the labels of sudoko box which has two digits values
+    2. Group the labels which have same value
+    3. Group out the peers of two same value label
+    4. Delete the same value from the grouped out peers
+
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: In the naked twins func, we use constraints which is sudoku boxes in the same peers,
-based on this constrain we add constraint that two boxes have the same two digits value must be in the same peers, this gives the naked twins mothed.
+A: In the naked twins func, we first set the constraint as the sudoko box has two digit values, this will filter out the sudoku
+box labels which have only two digits values out. Then we group the labels out which have same box values. Then for the same value's labels
+we add constraint that they must have a number of common peers, after we find out the common peers, we can narrow down the digit values of
+those common peers. This help us further reduce the number of possibilities of some boxes.
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: We add diagonal constraint to the original constraints to enhance the constraints, this helps us further reduce the number of possibilities in sudoko box.
+A: We add diagonal constraint which is among the two main diagonals, the numbers 1 to 9 should all appear exactly once, we do so by adding
+the two main diagnals boxs into our peers, this help enhance the constraints to meet the requirements of diagmonal soduku.
 
 ### Install
 
