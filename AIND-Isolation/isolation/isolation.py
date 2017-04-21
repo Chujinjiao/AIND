@@ -253,6 +253,8 @@ class Board(object):
         knight in chess).
         """
 
+        #I think this only true for a totally blank board, once there is one move on the board, the second
+        #player needs consider the constrains
         if move == Board.NOT_MOVED:
             return self.get_blank_spaces()
 
@@ -288,11 +290,12 @@ class Board(object):
                 if not self.__board_state__[i][j]:
                     out += ' '
                 elif p1_loc and i == p1_loc[0] and j == p1_loc[1]:
-                    out += '1'
+                    out += 'A' #out += '1'
                 elif p2_loc and i == p2_loc[0] and j == p2_loc[1]:
-                    out += '2'
+                    out += 'B' #out += '2'
                 else:
-                    out += '-'
+                    # out += '-'
+                    out += str(self.__board_state__[i][j])
 
                 out += ' | '
             out += '\n\r'
@@ -332,8 +335,6 @@ class Board(object):
             curr_move = self.active_player.get_move(game_copy, legal_player_moves, time_left)
             move_end = time_left()
 
-            # print move_end
-
             if curr_move is None:
                 curr_move = Board.NOT_MOVED
 
@@ -342,10 +343,20 @@ class Board(object):
             else:
                 move_history[-1].append(curr_move)
 
+            #run out of time, stop and inactive_player won
             if move_end < 0:
                 return self.__inactive_player__, move_history, "timeout"
 
+            #(-1,-1) leads to stop, inactive_player won
             if curr_move not in legal_player_moves:
                 return self.__inactive_player__, move_history, "illegal move"
 
+            #this part is for check game status
+            # print("\nstate:\n{}".format(game_copy.to_string()))
+            # new_game = self.apply_move(curr_move)
+            # new_moves = self.get_legal_moves(new_game)
+            # print('moves', new_moves)
+
             self.apply_move(curr_move)
+
+

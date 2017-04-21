@@ -43,13 +43,43 @@ def custom_score(game, player):
     if game.is_winner(player):
         return float("inf")
 
-    # return float(len(game.get_legal_moves(player)))
+    return custome_heristic_score_two(game, player)
 
-    #this part copy from sample_player for test
-    # own_moves = len(game.get_legal_moves(player))
-    # opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
+#compare the differential of legal_moves with total blank spaces, game with high ratio leads better outcomes
+# ID_Improved         62.86%
+# Student            67.14%
+def custom_heuristic_score_one(game, player):
+    blank_spaces = len(game.get_blank_spaces())
+    score = float(len(game.get_legal_moves(player)) * 3 - len(game.get_legal_moves(game.get_opponent(player))) * 2)
+    return score / blank_spaces
 
-    return float(len(game.get_legal_moves(player)) - len(game.get_legal_moves(game.get_opponent(player))))
+# Based on the differential of player's legal moves and opponent's legal moves, add the check of
+# how many new legal moves it leads to with forecast every legal moves,
+# compare the sum of new legal moves between the player and it's opponent
+# ID_Improved         65.71%
+# Student             76.43%
+def custome_heristic_score_two(game, player):
+    player_newgame = [(game.forecast_move(move)) for move in game.get_legal_moves(player)]
+    opponent_player_newgame = [(game.forecast_move(move)) for move in game.get_legal_moves(game.get_opponent(player))]
+    game_diff = float(len(game.get_legal_moves(player)) - len(game.get_legal_moves(game.get_opponent(player))))
+    forecast_move_game_diff = sum([len(game.get_legal_moves(game.inactive_player)) for game in player_newgame]) - \
+                              sum([len(game.get_legal_moves(game.active_player)) for game in opponent_player_newgame])
+    return game_diff + forecast_move_game_diff
+
+#Based on the differential of player's legal moves and opponent's legal moves, give addional score if moves results in center
+# ID_Improved         60.00%
+# Student             66.43%
+
+def custome_heristic_score_three(game, player):
+    center = [(x, y) for x in [2, 3, 4] for y in [2, 3, 4]]
+    blank_spaces = len(game.get_blank_spaces())
+    player_moves = game.get_legal_moves(player)
+    opponent_player_moves = game.get_legal_moves(game.get_opponent(player))
+    player_center_moves = len([move for move in player_moves if move in center])
+    opponent_player_center_moves = len([move for move in opponent_player_moves if move in center])
+    return len(player_moves) + player_center_moves - len(opponent_player_moves) - opponent_player_center_moves
+
+
 
 class CustomPlayer:
     """Game-playing agent that chooses a move using your evaluation function
@@ -146,11 +176,9 @@ class CustomPlayer:
                 depth = 1
                 while True:
                     _, best_move = getattr(self, self.method)(game, depth)
-                    # _, best_move = eval(self.method)(game, depth) #seems this way not work?
                     depth += 1
             else:
                 _, best_move = getattr(self, self.method)(game, self.search_depth)
-                # _, best_move = eval(self.method)(game, self.search_depth)
 
         except Timeout:
             # Handle any actions required at timeout, if necessary

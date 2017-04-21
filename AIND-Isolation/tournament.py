@@ -106,7 +106,7 @@ def play_round(agents, num_matches):
     """
     Play one round (i.e., a single match between each pair of opponents)
     """
-    agent_1 = agents[-1]
+    agent_1 = agents[-1] #last agent used as opponents
     wins = 0.
     total = 0.
 
@@ -149,10 +149,8 @@ def main():
     # (MM=minimax, AB=alpha-beta) and the heuristic function (Null=null_score,
     # Open=open_move_score, Improved=improved_score). For example, MM_Open is
     # an agent using minimax search with the open moves heuristic.
-    mm_agents = [Agent(CustomPlayer(score_fn=h, **MM_ARGS),
-                       "MM_" + name) for name, h in HEURISTICS]
-    ab_agents = [Agent(CustomPlayer(score_fn=h, **AB_ARGS),
-                       "AB_" + name) for name, h in HEURISTICS]
+    mm_agents = [Agent(CustomPlayer(score_fn=h, **MM_ARGS), "MM_" + name) for name, h in HEURISTICS]
+    ab_agents = [Agent(CustomPlayer(score_fn=h, **AB_ARGS), "AB_" + name) for name, h in HEURISTICS]
     random_agents = [Agent(RandomPlayer(), "Random")]
 
     # ID_Improved agent is used for comparison to the performance of the
@@ -160,8 +158,11 @@ def main():
     # systems; i.e., the performance of the student agent is considered
     # relative to the performance of the ID_Improved agent to account for
     # faster or slower computers.
-    test_agents = [Agent(CustomPlayer(score_fn=improved_score, **CUSTOM_ARGS), "ID_Improved"),
-                   Agent(CustomPlayer(score_fn=custom_score, **CUSTOM_ARGS), "Student")]
+
+    # test_agents = [Agent(CustomPlayer(score_fn=improved_score, **CUSTOM_ARGS), "ID_Improved"),
+    #                Agent(CustomPlayer(score_fn=custom_score, **CUSTOM_ARGS), "Student")]
+
+    test_agents = [Agent(CustomPlayer(score_fn=custom_score, **CUSTOM_ARGS), "Student"), Agent(CustomPlayer(score_fn=improved_score, **CUSTOM_ARGS), "ID_Improved")]
 
     print(DESCRIPTION)
     for agentUT in test_agents:
@@ -171,6 +172,7 @@ def main():
         print("*************************")
 
         agents = random_agents + mm_agents + ab_agents + [agentUT]
+        # print(agents)
         win_ratio = play_round(agents, NUM_MATCHES)
 
         print("\n\nResults:")
